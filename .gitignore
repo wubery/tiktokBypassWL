@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.env
+data/
+storage/raw/*
+storage/processed/*
+storage/watermarks/*
+!storage/raw/.gitkeep
+!storage/processed/.gitkeep
+!storage/watermarks/.gitkeep
+*.db
+.venv/
+venv/

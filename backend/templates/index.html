@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TikTok Publisher</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo"></div>
+    <h1>TikTok Publisher</h1>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Аккаунты TikTok</h2>
+      {% if accounts %}
+      <table>
+        <tr><th>Название</th><th>Cookies</th><th>Загрузить cookies.txt</th></tr>
+        {% for a in accounts %}
+        <tr>
+          <td>{{ a.label }}</td>
+          <td>
+            {% if a.cookies_updated_at %}
+              <span class="badge published">обновлены {{ a.cookies_updated_at.strftime("%d.%m.%Y %H:%M") }}</span>
+            {% else %}
+              <span class="badge failed">не загружены</span>
+            {% endif %}
+          </td>
+          <td class="cookies-cell">
+            <form action="/api/accounts/{{ a.id }}/cookies" method="post" enctype="multipart/form-data">
+              <input type="file" name="file" accept=".txt" required>
+              <button type="submit">Загрузить</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      <p class="empty-state">Пока нет ни одного аккаунта.</p>
+      {% endif %}
+      <p class="hint">
+        Cookies экспортируются из браузера после ручного логина в нужный TikTok-аккаунт
+        (например, расширением «Get cookies.txt»). Автоматического логина по паролю нет.
+      </p>
+      <form class="inline" action="/api/accounts/" method="post">
+        <input name="label" placeholder="Название аккаунта" required>
+        <button type="submit">Добавить аккаунт</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Видео</h2>
+      {% if videos %}
+      <table>
+        <tr><th>Название</th><th>Вотермарк</th><th>Статус</th></tr>
+        {% for v in videos %}
+        <tr>
+          <td>{{ v.title }}</td>
+          <td>{{ v.watermark_id or "—" }}</td>
+          <td>
+            {% if v.processed_path %}
+              <span class="badge published">обработано</span>
+            {% else %}
+              <span class="badge queued">в очереди</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      <p class="empty-state">Видео пока не загружены.</p>
+      {% endif %}
+      <form class="stack" action="/api/videos/upload" method="post" enctype="multipart/form-data">
+        <input name="title" placeholder="Название видео" required>
+        <input type="file" name="file" accept="video/*">
+        <select name="watermark_id">
+          <option value="">без вотермарка</option>
+          {% for w in watermarks %}
+          <option value="{{ w.id }}">{{ w.name }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Загрузить видео</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Создать публикацию</h2>
+      <form class="stack" action="/api/jobs/" method="post">
+        <input name="video_id" type="number" placeholder="ID видео" required>
+        <input name="account_ids" placeholder="ID аккаунтов через запятую" required>
+        <input name="scheduled_at" type="datetime-local">
+        <button type="submit">Создать задачи публикации</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>История публикаций</h2>
+      {% if jobs %}
+      <table>
+        <tr><th>Job</th><th>Видео</th><th>Аккаунт</th><th>Статус</th><th>Ошибка</th></tr>
+        {% for j in jobs %}
+        <tr>
+          <td>#{{ j.id }}</td>
+          <td>{{ j.video_id }}</td>
+          <td>{{ j.account_id }}</td>
+          <td><span class="badge {{ j.status }}">{{ j.status }}</span></td>
+          <td>{{ j.error or "—" }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+      <p class="empty-state">Публикаций пока не было.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
