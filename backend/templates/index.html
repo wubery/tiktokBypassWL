@@ -17,7 +17,7 @@
       <h2>Аккаунты TikTok</h2>
       {% if accounts %}
       <table>
-        <tr><th>Название</th><th>Cookies</th><th>Загрузить cookies.txt</th></tr>
+        <tr><th>Название</th><th>Cookies</th><th>Загрузить cookies.txt</th><th>Прокси</th></tr>
         {% for a in accounts %}
         <tr>
           <td>{{ a.label }}</td>
@@ -34,6 +34,20 @@
               <button type="submit">Загрузить</button>
             </form>
           </td>
+          <td>
+            {% if a.proxy_enc %}
+              <span class="badge published">подключён</span>
+            {% else %}
+              <span class="badge queued">не задан</span>
+            {% endif %}
+            <form class="proxy-form" action="/api/accounts/{{ a.id }}/proxy" method="post">
+              <input name="proxy_host" placeholder="host">
+              <input name="proxy_port" placeholder="port">
+              <input name="proxy_user" placeholder="user (опц.)">
+              <input name="proxy_pass" type="password" placeholder="pass (опц.)">
+              <button type="submit">{{ "Обновить" if a.proxy_enc else "Привязать" }}</button>
+            </form>
+          </td>
         </tr>
         {% endfor %}
       </table>
@@ -43,6 +57,9 @@
       <p class="hint">
         Cookies экспортируются из браузера после ручного логина в нужный TikTok-аккаунт
         (например, расширением «Get cookies.txt»). Автоматического логина по паролю нет.
+        Прокси (host:port, опционально user/pass) привязывается к конкретному аккаунту —
+        публикация для этого аккаунта пойдёт через указанный IP. Чтобы отвязать прокси,
+        отправьте форму с пустыми host/port.
       </p>
       <form class="inline" action="/api/accounts/" method="post">
         <input name="label" placeholder="Название аккаунта" required>

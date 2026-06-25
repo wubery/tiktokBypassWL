@@ -1,13 +1,13 @@
 # TikTok Publisher
 
-Веб-панель для публикации собственных коротких видео (со своим вотермарком) в несколько TikTok-аккаунтов через открытую библиотеку [tiktok-uploader](https://github.com/wkaisertexas/tiktok-uploader) (браузерная автоматизация на Playwright, аутентификация по cookies).
+Веб-панель для публикации собственных коротких видео (со своим вотермарком) в несколько TikTok-аккаунтов через открытую библиотеку [tiktok-uploader](https://github.com/wkaisertexas/tiktok-uploader) (браузерная автоматизация на Selenium + Chromium, аутентификация по cookies).
 
 ## Запуск
 
 1. Скопируйте `.env.example` в `.env` и заполните:
    - `SECRET_KEY` — случайная строка для шифрования cookies аккаунтов в БД.
    - `PANEL_USERNAME` / `PANEL_PASSWORD` — доступ к самой панели.
-2. `docker-compose up --build` (образ ставит Playwright + Chromium).
+2. `docker-compose up --build` (образ ставит Chromium + chromium-driver).
 3. Открыть `http://localhost:8000` (Basic Auth — логин/пароль из `.env`).
 4. Для каждого TikTok-аккаунта: войти в него в своём браузере, экспортировать `cookies.txt` (например, расширением "Get cookies.txt"), загрузить файл в панели на странице аккаунта.
 

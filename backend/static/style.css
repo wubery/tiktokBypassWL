@@ -143,6 +143,24 @@ form.stack {
   max-width: 480px;
 }
 
+form.proxy-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+form.proxy-form input {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.82rem;
+  width: 90px;
+}
+
+form.proxy-form button {
+  padding: 0.4rem 0.7rem;
+  font-size: 0.82rem;
+}
+
 input, select {
   background: var(--panel-2);
   border: 1px solid var(--border);

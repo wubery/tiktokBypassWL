@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 from app.db import engine
 from app.models import Job, Video, Account, Watermark, PublishLog
 from app.video.watermark import apply_watermark
-from app.auth.tiktok_oauth import get_cookies
+from app.auth.tiktok_oauth import get_cookies, get_proxy
 from app.publisher.tiktok_client import publish_video, TikTokPublishError
 
 logger = logging.getLogger("scheduler")
@@ -46,7 +46,8 @@ async def run_job(job_id: int, attempt: int = 1) -> None:
                 session.commit()
 
             cookies_content = get_cookies(account)
-            await publish_video(cookies_content, processed_path, caption=video.title)
+            proxy = get_proxy(account)
+            await publish_video(cookies_content, processed_path, caption=video.title, proxy=proxy)
             job.status = "published"
 
         except Exception as exc:  # noqa: BLE001

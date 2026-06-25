@@ -8,6 +8,7 @@ class Account(SQLModel, table=True):
     label: str
     cookies_enc: Optional[bytes] = None  # содержимое cookies.txt, зашифрованное
     cookies_updated_at: Optional[datetime] = None
+    proxy_enc: Optional[bytes] = None  # JSON {host, port, user, pass}, зашифрованный
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 

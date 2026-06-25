@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, UploadFile, Form
+from fastapi.responses import RedirectResponse
 from sqlmodel import Session, select
 
 from app.db import get_session
@@ -33,8 +34,7 @@ async def upload_video(
     video = Video(title=title, raw_path=raw_path, watermark_id=watermark_id)
     session.add(video)
     session.commit()
-    session.refresh(video)
-    return video
+    return RedirectResponse("/", status_code=303)
 
 
 @router.post("/watermarks", dependencies=[Depends(require_panel_auth)])
@@ -59,5 +59,4 @@ async def upload_watermark(
     watermark = Watermark(name=name, file_path=path, position=position, opacity=opacity, scale=scale)
     session.add(watermark)
     session.commit()
-    session.refresh(watermark)
-    return watermark
+    return RedirectResponse("/", status_code=303)
